@@ -2,143 +2,19 @@ const fs = require('fs-extra');
 const path = require('path');
 const { TEMP_DIR } = require('./fileUtils');
 
-// Estilos de legendas predefinidos
+// Estilos de legendas predefinidos (apenas default por agora)
 const subtitleStyles = {
   default: {
-    fontName: 'Roboto Bold',
-    fontSize: 30,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H80000000', // Preto semi-transparente
-    bold: -1, // true
-    outline: 2,
-    shadow: 1
-  },
-  retro: {
-    fontName: 'Arial Black',
-    fontSize: 36,
-    primaryColor: '&H000000FF', // Vermelho
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H80000000', // Preto semi-transparente
-    bold: -1,
-    outline: 2,
-    shadow: 1
-  },
-  neon: {
-    fontName: 'Impact',
-    fontSize: 32,
-    primaryColor: '&H00FF8000', // Azul neon
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H00000000', // Transparente
-    bold: -1,
-    outline: 2,
-    shadow: 3
-  },
-  minimal: {
-    fontName: 'Arial',
-    fontSize: 28,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H00000000', // Transparente
-    bold: 0, // false
-    outline: 1,
-    shadow: 0
-  },
-  modern: {
-    fontName: 'Segoe UI',
-    fontSize: 30,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H40000000', // Preto semi-transparente
-    bold: -1,
-    outline: 1,
-    shadow: 1
-  },
-  subtle: {
-    fontName: 'Calibri',
-    fontSize: 24,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H00000000', // Transparente
-    bold: 0, // false
-    outline: 1,
-    shadow: 0
-  },
-  emoji: {
-    fontName: 'Segoe UI Emoji',
-    fontSize: 30,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H00000000', // Transparente
-    bold: -1,
-    outline: 2,
-    shadow: 1
-  },
-  tiktok: {
-    fontName: 'Segoe UI Black',
-    fontSize: 36,
-    primaryColor: '&H008080FF', // Rosa
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H80000000', // Preto semi-transparente
-    bold: -1,
-    outline: 2,
-    shadow: 1
-  },
-  youtuber: {
-    fontName: 'Impact',
-    fontSize: 42,
-    primaryColor: '&H0000FFFF', // Amarelo
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H80000000', // Preto semi-transparente
-    bold: -1,
-    outline: 3,
-    shadow: 3
-  },
-  movie: {
-    fontName: 'Times New Roman',
-    fontSize: 38,
-    primaryColor: '&H00FFFFFF', // Branco
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H80000000', // Preto semi-transparente
-    bold: -1,
-    outline: 1,
-    shadow: 3
-  },
-  capcut: {
-    fontName: 'Montserrat Bold',
-    fontSize: 40,
-    primaryColor: '&H00FFFFFF', // Branco
-    highlightColor: '&H000080FF', // Laranja para palavra destacada
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H60000000', // Preto semi-transparente
-    bold: -1,
-    outline: 2,
-    shadow: 1,
-    animation: 'pop' // Efeito de animação pop
-  },
-  capcut_neon: {
-    fontName: 'Montserrat ExtraBold',
-    fontSize: 38,
+    fontName: 'Impact', // Fonte chamativa e bold
+    fontSize: 42, // Tamanho maior para ser mais chamativo
     primaryColor: '&H00FFFFFF', // Branco
     highlightColor: '&H0000FFFF', // Amarelo para palavra destacada
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H40000000', // Preto semi-transparente
-    bold: -1,
-    outline: 2,
-    shadow: 2,
-    animation: 'glow' // Efeito de brilho
-  },
-  capcut_minimal: {
-    fontName: 'Roboto',
-    fontSize: 36,
-    primaryColor: '&H00FFFFFF', // Branco
-    highlightColor: '&H000080FF', // Laranja para palavra destacada
-    outlineColor: '&H00000000', // Preto
-    backColor: '&H00000000', // Transparente
-    bold: -1,
-    outline: 1,
-    shadow: 0,
-    animation: 'slide' // Efeito de deslizamento
+    outlineColor: '&H00000000', // Contorno preto
+    backColor: '&H80000000', // Preto semi-transparente
+    bold: -1, // true
+    outline: 3, // Contorno mais espesso para maior visibilidade
+    shadow: 2, // Sombra para profundidade
+    animation: 'fade' // Efeito de animação fade
   }
 };
 
@@ -194,102 +70,10 @@ const createASSFile = (text, outputPath, duration, subtitleOptions = {}) => {
   
   // Cores no formato ASS: &HAABBGGRR (Alpha, Blue, Green, Red)
   switch (styleName) {
-    case 'retro':
-      // Vermelho
-      primaryColor = '&H000000FF';
-      fontName = 'Arial Black';
-      fontSize = 36;
-      backColor = '&H80000000'; // Preto semi-transparente
-      break;
-      
-    case 'neon':
-      // Azul neon
-      primaryColor = '&H00FF8000';
-      fontName = 'Impact';
-      fontSize = 32;
-      outline = 2;
-      shadow = 3;
-      backColor = '&H00000000'; // Transparente
-      break;
-      
-    case 'minimal':
+    default: // default style
       primaryColor = '&H00FFFFFF';
-      fontName = 'Arial';
-      fontSize = 28;
-      bold = 0; // false
-      outline = 1;
-      shadow = 0;
-      backColor = '&H00000000'; // Transparente
-      break;
-      
-    case 'modern':
-      primaryColor = '&H00FFFFFF';
-      fontName = 'Segoe UI';
-      fontSize = 30;
-      backColor = '&H40000000'; // Preto semi-transparente
-      outline = 1;
-      shadow = 1;
-      break;
-      
-    case 'subtle':
-      primaryColor = '&H00FFFFFF';
-      fontName = 'Calibri';
-      fontSize = 24;
-      bold = 0; // false
-      outline = 1;
-      shadow = 0;
-      backColor = '&H00000000'; // Transparente
-      break;
-      
-    case 'emoji':
-      primaryColor = '&H00FFFFFF';
-      fontName = 'Segoe UI Emoji';
-      fontSize = 30;
-      outline = 2;
-      shadow = 1;
-      backColor = '&H00000000'; // Transparente
-      break;
-      
-    case 'retro':
-      primaryColor = '&H0000FFFF';
-      fontName = 'Arial Black';
-      fontSize = 36;
-      outline = 2;
-      shadow = 1;
-      backColor = '&H80000000'; // Preto semi-transparente
-      break;
-      
-    case 'tiktok':
-      // Rosa
-      primaryColor = '&H008080FF';
-      fontName = 'Segoe UI Black';
-      fontSize = 36;
-      backColor = '&H80000000'; // Preto semi-transparente
-      break;
-      
-    case 'youtuber':
-      // Amarelo
-      primaryColor = '&H0000FFFF';
       fontName = 'Impact';
       fontSize = 42;
-      outline = 3;
-      shadow = 3;
-      break;
-      
-    case 'movie':
-      // Branco com sombra maior
-      primaryColor = '&H00FFFFFF';
-      fontName = 'Times New Roman';
-      fontSize = 38;
-      outline = 1;
-      shadow = 3;
-      break;
-      
-    default: // default style
-      // Branco
-      primaryColor = '&H00FFFFFF';
-      fontName = 'Roboto Bold';
-      fontSize = 30;
       break;
   }
 
@@ -365,20 +149,17 @@ const createASSFileFromTranscription = (transcription, outputPath, duration, sub
   const position = subtitleOptions.position || 'bottom';
   console.log(`Aplicando posição: ${position}`);
   
-  // Verificar se deve usar o estilo CapCut (destaque de palavras)
-  const useCapcutStyle = true;
-  
-  // Definir configurações específicas para cada estilo
+  // Definir configurações específicas para o estilo default
   let primaryColor = '&H00FFFFFF'; // Branco por padrão
-  let highlightColor = '&H000080FF'; // Laranja para palavra destacada
-  let fontName = 'Arial';
-  let fontSize = 30;
+  let highlightColor = '&H0000FFFF'; // Amarelo para palavra destacada
+  let fontName = 'Impact';
+  let fontSize = 42;
   let bold = -1; // true
-  let outline = 2;
-  let shadow = 1;
+  let outline = 3;
+  let shadow = 2;
   let backColor = '&H80000000'; // Preto semi-transparente
   let alignment = 2; // Centralizado horizontalmente, inferior (padrão)
-  let animation = 'pop'; // Efeito de animação pop por padrão
+  let animation = 'fade'; // Efeito de animação padrão
   
   // Definir alinhamento baseado na posição
   switch (position.toLowerCase()) {
@@ -394,150 +175,16 @@ const createASSFileFromTranscription = (transcription, outputPath, duration, sub
       break;
   }
   
-  // Cores no formato ASS: &HAABBGGRR (Alpha, Blue, Green, Red)
-  switch (styleName) {
-    case 'retro':
-      // Vermelho
-      primaryColor = '&H000000FF';
-      highlightColor = '&H00FFFFFF'; // Branco para destaque
-      fontName = 'Arial Black';
-      fontSize = 36;
-      backColor = '&H80000000'; // Preto semi-transparente
-      animation = 'pop';
-      break;
-      
-    case 'neon':
-      // Azul neon
-      primaryColor = '&H00FF8000';
-      highlightColor = '&H00FFFFFF'; // Branco para destaque
-      fontName = 'Impact';
-      fontSize = 32;
-      outline = 2;
-      shadow = 3;
-      backColor = '&H00000000'; // Transparente
-      animation = 'glow';
-      break;
-      
-    case 'minimal':
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H000080FF'; // Laranja para destaque
-      fontName = 'Arial';
-      fontSize = 28;
-      bold = 0; // false
-      outline = 1;
-      shadow = 0;
-      backColor = '&H00000000'; // Transparente
-      animation = 'slide';
-      break;
-      
-    case 'modern':
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H0000FFFF'; // Amarelo para destaque
-      fontName = 'Segoe UI';
-      fontSize = 30;
-      backColor = '&H40000000'; // Preto semi-transparente
-      outline = 1;
-      shadow = 1;
-      animation = 'pop';
-      break;
-      
-    case 'subtle':
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H00CCCCCC'; // Cinza claro para destaque
-      fontName = 'Calibri';
-      fontSize = 24;
-      bold = 0; // false
-      outline = 1;
-      shadow = 0;
-      backColor = '&H00000000'; // Transparente
-      animation = 'slide';
-      break;
-      
-    case 'emoji':
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H0000FFFF'; // Amarelo para destaque
-      fontName = 'Segoe UI Emoji';
-      fontSize = 30;
-      outline = 2;
-      shadow = 1;
-      backColor = '&H00000000'; // Transparente
-      animation = 'pop';
-      break;
-      
-    case 'tiktok':
-      // Rosa
-      primaryColor = '&H008080FF';
-      highlightColor = '&H000000FF'; // Vermelho para destaque
-      fontName = 'Segoe UI Black';
-      fontSize = 36;
-      backColor = '&H80000000'; // Preto semi-transparente
-      animation = 'pop';
-      break;
-      
-    case 'youtuber':
-      // Amarelo
-      primaryColor = '&H0000FFFF';
-      highlightColor = '&H00FFFFFF'; // Branco para destaque
-      fontName = 'Impact';
-      fontSize = 42;
-      outline = 3;
-      shadow = 3;
-      animation = 'glow';
-      break;
-      
-    case 'movie':
-      // Branco com sombra maior
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H0000FFFF'; // Amarelo para destaque
-      fontName = 'Times New Roman';
-      fontSize = 38;
-      outline = 1;
-      shadow = 3;
-      animation = 'pop';
-      break;
-      
-    case 'capcut':
-      primaryColor = '&H00FFFFFF'; // Branco
-      highlightColor = '&H000080FF'; // Laranja para palavra destacada
-      fontName = 'Montserrat Bold';
-      fontSize = 40;
-      outline = 2;
-      shadow = 1;
-      backColor = '&H60000000'; // Preto semi-transparente
-      animation = 'pop';
-      break;
-      
-    case 'capcut_neon':
-      primaryColor = '&H00FFFFFF'; // Branco
-      highlightColor = '&H0000FFFF'; // Amarelo para palavra destacada
-      fontName = 'Montserrat ExtraBold';
-      fontSize = 38;
-      outline = 2;
-      shadow = 2;
-      backColor = '&H40000000'; // Preto semi-transparente
-      animation = 'glow';
-      break;
-      
-    case 'capcut_minimal':
-      primaryColor = '&H00FFFFFF'; // Branco
-      highlightColor = '&H000080FF'; // Laranja para palavra destacada
-      fontName = 'Roboto';
-      fontSize = 36;
-      outline = 1;
-      shadow = 0;
-      backColor = '&H00000000'; // Transparente
-      animation = 'slide';
-      break;
-      
-    default: // default style
-      // Branco
-      primaryColor = '&H00FFFFFF';
-      highlightColor = '&H0000FFFF'; // Amarelo para destaque
-      fontName = 'Roboto Bold';
-      fontSize = 30;
-      animation = 'pop';
-      break;
-  }
+  // Aplicar configurações do estilo default
+  primaryColor = subtitleStyles.default.primaryColor;
+  highlightColor = subtitleStyles.default.highlightColor;
+  fontName = subtitleStyles.default.fontName;
+  fontSize = subtitleStyles.default.fontSize;
+  bold = subtitleStyles.default.bold;
+  outline = subtitleStyles.default.outline;
+  shadow = subtitleStyles.default.shadow;
+  backColor = subtitleStyles.default.backColor;
+  animation = subtitleStyles.default.animation;
 
   // Substituir com valores personalizados se fornecidos
   if (subtitleOptions.highlightColor) {
@@ -548,12 +195,9 @@ const createASSFileFromTranscription = (transcription, outputPath, duration, sub
     animation = subtitleOptions.animation;
   }
 
-  // Construir a definição de estilo principal
+  // Construir a definição de estilo
   const styleDefinition = `Style: Default,${fontName},${fontSize},${primaryColor},&H000000FF,&H00000000,${backColor},${bold},0,0,0,100,100,0,0,1,${outline},${shadow},${alignment},10,10,10,1`;
   console.log('Definição de estilo:', styleDefinition);
-  
-  // Construir a definição de estilo para palavras destacadas
-  const highlightStyleDefinition = `Style: Highlight,${fontName},${fontSize},${highlightColor},&H000000FF,&H00000000,${backColor},${bold},0,0,0,100,100,0,0,1,${outline},${shadow},${alignment},10,10,10,1`;
 
   // Criar conteúdo do arquivo ASS
   const assContent = [
@@ -568,17 +212,12 @@ const createASSFileFromTranscription = (transcription, outputPath, duration, sub
     '',
     '[V4+ Styles]',
     'Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding',
-    styleDefinition
+    styleDefinition,
+    '',
+    '[Events]',
+    'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'
   ];
-  
-  // Adicionar estilo de destaque se estiver usando o estilo CapCut
-  if (useCapcutStyle) {
-    assContent.push(highlightStyleDefinition);
-  }
-  
-  assContent.push('', '[Events]', 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text');
 
-  // Modo CapCut: cada palavra tem seu próprio evento de diálogo com destaque
   // Agrupar palavras em frases completas (baseado em pontuação ou pausas longas)
   const sentences = [];
   let currentSentence = [];
@@ -601,54 +240,82 @@ const createASSFileFromTranscription = (transcription, outputPath, duration, sub
       words: [...currentSentence]
     });
   }
-  
-  // Para cada frase, criar eventos de diálogo para cada palavra e para a frase completa
+
+  // Para cada frase, criar um único evento de diálogo com destaques sequenciais
   sentences.forEach((sentence) => {
     if (sentence.words.length === 0) return;
-    
+
     const sentenceWords = sentence.words;
-    const startTime = formatTime(sentenceWords[0].start);
-    const endTime = formatTime(sentenceWords[sentenceWords.length - 1].end);
-    
-    // Texto completo da frase para o fundo
-    const sentenceText = sentenceWords.map(word => word.text).join(' ');
-    
-    // Criar evento de diálogo para a frase completa (fundo)
-    const dialogueLine = `Dialogue: 0,${startTime},${endTime},Default,,0,0,0,,${sentenceText}`;
-    assContent.push(dialogueLine);
-    
-    // Criar eventos de diálogo para cada palavra com destaque
-    sentenceWords.forEach((word) => {
-      const wordStartTime = formatTime(word.start);
-      const wordEndTime = formatTime(word.end);
-      
-      // Calcular a posição da palavra na frase
-      const wordIndex = sentenceText.indexOf(word.text);
-      if (wordIndex >= 0) {
-        // Criar texto com tags ASS para destacar apenas a palavra atual
-        let highlightText = sentenceText;
-        
-        // Aplicar efeito de animação se especificado
-        let animationTags = '';
-        if (animation === 'pop') {
-          animationTags = '{\\t(0,60,\\fscx115\\fscy115)\\t(60,120,\\fscx100\\fscy100)}';
-        } else if (animation === 'glow') {
-          animationTags = '{\\t(0,120,\\3c&H00FFFF&\\4a&H00&)\\t(120,240,\\3c&H000000&\\4a&H80&)}';
-        } else if (animation === 'slide') {
-          animationTags = '{\\move(' + (alignment === 2 ? '640,680,640,650' : alignment === 5 ? '640,380,640,360' : '640,80,640,50') + ')}';
-        }
-        
-        // Criar texto com a palavra destacada
-        const beforeWord = highlightText.substring(0, wordIndex);
-        const afterWord = highlightText.substring(wordIndex + word.text.length);
-        
-        highlightText = `${beforeWord}{\\c${highlightColor}${animationTags}}${word.text}{\\c${primaryColor}}${afterWord}`;
-        
-        // Criar evento de diálogo para a palavra destacada
-        const wordDialogueLine = `Dialogue: 1,${wordStartTime},${wordEndTime},Default,,0,0,0,,${highlightText}`;
-        assContent.push(wordDialogueLine);
+    const sentenceStartTime = sentenceWords[0].start;
+    const sentenceEndTime = sentenceWords[sentenceWords.length - 1].end;
+
+    // Texto completo da frase
+    let sentenceText = sentenceWords.map(word => word.text).join(' ');
+
+    // Dividir o texto em linhas com base em um limite de caracteres por linha
+    const maxCharsPerLine = 30; // Ajuste conforme necessário
+    const wordsInSentence = sentenceText.split(' ');
+    let lines = [];
+    let currentLine = [];
+
+    wordsInSentence.forEach(word => {
+      const testLine = [...currentLine, word].join(' ');
+      if (testLine.length <= maxCharsPerLine) {
+        currentLine.push(word);
+      } else {
+        lines.push(currentLine.join(' '));
+        currentLine = [word];
       }
     });
+    if (currentLine.length > 0) {
+      lines.push(currentLine.join(' '));
+    }
+
+    // Juntar as linhas com quebras de linha manuais (\N)
+    sentenceText = lines.join('\\N');
+
+    // Construir o texto com tags de transformação para destacar palavras sequencialmente
+    let formattedText = '';
+    const allWords = sentenceText.split(/(\\N| )/); // Divide por espaços e quebras de linha
+    let wordIndex = 0;
+
+    // Inicializar todas as palavras com a cor primária e opacidade reduzida
+    allWords.forEach((token, idx) => {
+      if (token === '\\N') {
+        formattedText += token; // Mantém a quebra de linha
+        return;
+      }
+      if (token === '') return; // Ignora espaços extras
+
+      const cleanToken = token.trim();
+      if (wordIndex < sentenceWords.length && cleanToken === sentenceWords[wordIndex].text) {
+        const word = sentenceWords[wordIndex];
+        const relativeStart = word.start - sentenceStartTime;
+        const relativeEnd = word.end - sentenceStartTime;
+
+        // Aplicar animação para a palavra atual
+        let animationTags = '';
+        if (animation === 'fade') {
+          animationTags = `\\c${primaryColor}\\alpha&H80&\\t(${relativeStart},${relativeEnd},\\c${highlightColor}\\alpha&H00&)\\t(${relativeEnd},${relativeEnd + 200},\\c${primaryColor}\\alpha&H80&)`;
+        } else if (animation === 'scale') {
+          animationTags = `\\c${primaryColor}\\alpha&H80&\\t(${relativeStart},${relativeEnd},\\c${highlightColor}\\fscx120\\fscy120)\\t(${relativeEnd},${relativeEnd + 200},\\c${primaryColor}\\fscx100\\fscy100)`;
+        }
+
+        formattedText += `{${animationTags}}${token}`;
+        wordIndex++;
+      } else {
+        formattedText += `{\\c${primaryColor}\\alpha&H80&}${token}`;
+      }
+
+      // Adicionar espaço entre palavras, exceto após o último token ou antes de \N
+      if (idx < allWords.length - 1 && allWords[idx + 1] !== '\\N') {
+        formattedText += ' ';
+      }
+    });
+
+    // Criar um único evento de diálogo para a frase inteira
+    const dialogueLine = `Dialogue: 0,${formatTime(sentenceStartTime)},${formatTime(sentenceEndTime + 500)},Default,,0,0,0,,${formattedText}`;
+    assContent.push(dialogueLine);
   });
 
   // Escrever o arquivo ASS

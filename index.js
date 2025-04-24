@@ -384,6 +384,22 @@ app.post('/generate-video', async (req, res) => {
           }
         }
 
+        // Fazer upload do vídeo para o Wasabi
+        const wasabiKey = `videos/${processId}/${path.basename(finalOutputPath)}`;
+        let videoUrl;
+        try {
+          // Fazer upload do vídeo
+          await uploadToWasabi(finalOutputPath, wasabiKey);
+          
+          // Gerar URL pré-assinada válida por 7 dias (604800 segundos)
+          videoUrl = await getSignedUrl(wasabiKey, 604800);
+          console.log('Upload para Wasabi concluído. URL pré-assinada gerada:', videoUrl);
+        } catch (uploadErr) {
+          console.error('Erro ao fazer upload do vídeo para o Wasabi:', uploadErr.message);
+          await saveProcessStatus(processId, 'failed', { error: `Erro ao fazer upload do vídeo: ${uploadErr.message}`, user_id: req.user?.id || 'anonymous' });
+          return;
+        }
+
         // Salvar informações do vídeo no Supabase
         const videoInfo = {
           process_id: processId,
@@ -397,18 +413,6 @@ app.post('/generate-video', async (req, res) => {
           console.log('Resultado do salvamento no Supabase:', saveResult);
         } catch (saveError) {
           console.error('Erro ao salvar informações do vídeo no Supabase:', saveError.message);
-        }
-
-        // Fazer upload do vídeo para o Wasabi
-        const wasabiKey = `videos/${processId}/${path.basename(finalOutputPath)}`;
-        let videoUrl;
-        try {
-          videoUrl = await uploadToWasabi(finalOutputPath, wasabiKey);
-          console.log('Upload para Wasabi concluído:', videoUrl);
-        } catch (uploadErr) {
-          console.error('Erro ao fazer upload do vídeo para o Wasabi:', uploadErr.message);
-          await saveProcessStatus(processId, 'failed', { error: `Erro ao fazer upload do vídeo: ${uploadErr.message}`, user_id: req.user?.id || 'anonymous' });
-          return;
         }
 
         // Atualizar informações do vídeo no Supabase
